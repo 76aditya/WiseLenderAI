@@ -33,7 +33,7 @@ class UserProfileUpdate(BaseModel):
     residential_address: str = Field(..., min_length=1)
     permanent_address: str = Field(..., min_length=1)
     nationality: str = Field(..., min_length=1)
-    mobile_number: str | None = None
+    mobile_number: str = Field(..., min_length=1)
     contact_email: EmailStr | None = None
     national_id_number: str = Field(..., min_length=1)
     pan_tax_id: str | None = None

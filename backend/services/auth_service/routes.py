@@ -22,9 +22,9 @@ def register_user(user_in: schemas.UserCreate, db: Session = Depends(get_db)):
                 detail="Username already registered",
             )
         user = crud.create_user(db, username=str(user_in.username), email=user_in.email, password=user_in.password)
-        logger.info("auth.register.success", extra={"username": str(user.username), "user_id": str(user.id)})
+        logger.info("auth.register.success", extra={"username": str(user.username), "user_id": user.username})
         return schemas.UserResponse(
-            id=str(user.id),
+            id=user.username,
             username=user.username,
             email=user.email,
             admin=user.admin,
@@ -65,8 +65,8 @@ def login(user_in: schemas.TokenRequest, db: Session = Depends(get_db)):
                 detail="Invalid username or password",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-        access_token = create_access_token(subject=str(user.id), username=user.username, admin=user.admin)
-        logger.info("auth.login.success", extra={"username": user.username, "user_id": str(user.id)})
+        access_token = create_access_token(subject=user.username, username=user.username, admin=user.admin)
+        logger.info("auth.login.success", extra={"username": user.username, "user_id": user.username})
         return schemas.TokenResponse(access_token=access_token, token_type="bearer")
     except HTTPException:
         raise
@@ -77,9 +77,9 @@ def login(user_in: schemas.TokenRequest, db: Session = Depends(get_db)):
 
 @router.get("/me", response_model=schemas.UserResponse)
 def read_current_user(current_user=Depends(get_current_user)):
-    logger.info("auth.me.request", extra={"user_id": str(current_user.id), "username": current_user.username})
+    logger.info("auth.me.request", extra={"user_id": current_user.username, "username": current_user.username})
     return schemas.UserResponse(
-        id=str(current_user.id),
+        id=current_user.username,
         username=current_user.username,
         email=current_user.email,
         admin=current_user.admin,
@@ -99,7 +99,7 @@ def read_current_user(current_user=Depends(get_current_user)):
 
 @router.put("/profile", response_model=schemas.UserResponse)
 def update_profile(profile_in: schemas.UserProfileUpdate, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
-    logger.info("auth.profile_update.request", extra={"user_id": str(current_user.id)})
+    logger.info("auth.profile_update.request", extra={"user_id": current_user.username})
     
     current_user.full_name = profile_in.full_name
     current_user.date_of_birth = profile_in.date_of_birth

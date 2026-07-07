@@ -38,8 +38,7 @@ class FinalReview(str, enum.Enum):
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    username = Column(String(255), unique=True, nullable=False, index=True)
+    username = Column(String(255), primary_key=True, index=True)
     email = Column(String(255), unique=True, nullable=True, index=True)
     hashed_password = Column(String(255), nullable=False)
     admin = Column(Boolean, nullable=False, default=False)
@@ -55,7 +54,7 @@ class User(Base):
     user_status = Column(String(50), nullable=False, server_default='Pending')
     
     # Optional Fields
-    mobile_number = Column(String(50), nullable=True)
+    mobile_number = Column(String(50), nullable=False, server_default='Not Provided')
     contact_email = Column(String(255), nullable=True)
     national_id_number = Column(String(100), nullable=True)
     pan_tax_id = Column(String(100), nullable=True)
@@ -79,7 +78,7 @@ class Application(Base):
     __tablename__ = "applications"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(String(255), ForeignKey("users.username", ondelete="CASCADE"), nullable=False, index=True)
     title = Column(String(128), nullable=False)
     status = Column(Enum(ApplicationStatus), nullable=False, default=ApplicationStatus.DRAFT)
     final_review = Column(
@@ -88,7 +87,7 @@ class Application(Base):
         server_default=FinalReview.NOT_REVIEWED.value,
         default=FinalReview.NOT_REVIEWED.value,
     )
-    reviewed_by = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
+    reviewed_by = Column(String(255), ForeignKey("users.username", ondelete="SET NULL"), nullable=True, index=True)
     reviewed_at = Column(DateTime(timezone=True), nullable=True)
     questionnaire = Column(JSON, nullable=False, default={})
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)

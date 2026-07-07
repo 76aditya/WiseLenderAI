@@ -14,7 +14,7 @@ def get_user_by_username(db: Session, username: str) -> User | None:
 
 
 def get_user_by_id(db: Session, user_id: str) -> User | None:
-    return db.query(User).filter(User.id == user_id).one_or_none()
+    return db.query(User).filter(User.username == user_id).one_or_none()
 
 
 def create_user(db: Session, username: str, password: str, email: str | None = None, admin: bool = False) -> User:
@@ -28,7 +28,7 @@ def create_user(db: Session, username: str, password: str, email: str | None = N
     db.add(user)
     db.commit()
     db.refresh(user)
-    logger.info("auth.db.commit_user", extra={"username": username, "user_id": str(user.id)})
+    logger.info("auth.db.commit_user", extra={"username": username, "user_id": user.username})
     return user
 
 

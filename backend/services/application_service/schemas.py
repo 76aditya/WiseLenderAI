@@ -27,7 +27,7 @@ class ApplicationResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-    @field_validator("id", "user_id", "reviewed_by", mode="before")
+    @field_validator("id", mode="before")
     @classmethod
     def stringify_uuid(cls, value: Any) -> Any:
         if isinstance(value, UUID):

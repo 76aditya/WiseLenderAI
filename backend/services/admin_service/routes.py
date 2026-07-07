@@ -13,7 +13,7 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 
 def _user_to_dict(user: User) -> dict:
     return {
-        "id": str(user.id),
+        "id": user.username,
         "username": user.username,
         "email": user.email,
         "admin": user.admin,
@@ -84,9 +84,9 @@ def list_users(
     
     results = []
     for user in users:
-        latest_app = db.query(Application).filter(Application.user_id == user.id).order_by(Application.created_at.desc()).first()
+        latest_app = db.query(Application).filter(Application.user_id == user.username).order_by(Application.created_at.desc()).first()
         results.append(admin_schemas.UserSummaryResponse(
-            id=str(user.id),
+            id=user.username,
             email=user.email,
             username=user.username,
             role="Admin" if user.admin else "User",
@@ -101,7 +101,7 @@ def get_user_details(
     db: Session = Depends(get_db),
     current_user=Depends(require_admin),
 ):
-    user = db.query(User).filter(User.id == user_id).one_or_none()
+    user = db.query(User).filter(User.username == user_id).one_or_none()
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return admin_schemas.UserResponse(**_user_to_dict(user))
@@ -164,7 +164,7 @@ def review_application(application_id: str, payload: admin_schemas.ReviewRequest
             db,
             application,
             payload.final_review,
-            str(current_user.id),
+            current_user.username,
         )
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc

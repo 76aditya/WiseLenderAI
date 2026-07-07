@@ -12,7 +12,7 @@ router = APIRouter(prefix="/applications", tags=["applications"])
 def authorize_application(application: Application, current_user):
     if application is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Application not found")
-    if str(application.user_id) != str(current_user.id) and not current_user.admin:
+    if application.user_id != current_user.username and not current_user.admin:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
     return application
 
@@ -32,7 +32,7 @@ def create_application(payload: dict[str, Any] = Body(...), db: Session = Depend
 
     application = crud.create_application(
         db,
-        user_id=str(current_user.id),
+        user_id=current_user.username,
         title=title,
         questionnaire=questionnaire,
     )
@@ -48,7 +48,7 @@ def list_applications(
     if current_user.admin:
         applications = crud.list_applications(db, search=search, status=status)
     else:
-        applications = crud.list_applications_for_user(db, user_id=str(current_user.id))
+        applications = crud.list_applications_for_user(db, user_id=current_user.username)
     return [to_application_response(app) for app in applications]
 
 @router.get("/{application_id}", response_model=schemas.ApplicationResponse)

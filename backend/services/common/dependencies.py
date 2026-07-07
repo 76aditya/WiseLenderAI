@@ -1,5 +1,4 @@
 import logging
-import uuid
 
 from fastapi import Depends, HTTPException, Security, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -32,12 +31,11 @@ def get_current_user(
             headers={"WWW-Authenticate": "Bearer"},
         ) from exc
 
-    try:
-        user_id = uuid.UUID(payload.sub)
-    except ValueError as exc:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token subject") from exc
+    if not payload.sub:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token subject")
+    user_id = payload.sub
 
-    user = db.query(User).filter(User.id == user_id, User.is_active.is_(True)).one_or_none()
+    user = db.query(User).filter(User.username == user_id, User.is_active.is_(True)).one_or_none()
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

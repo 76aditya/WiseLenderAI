@@ -32,7 +32,7 @@ export default function Onboarding() {
     setError('');
     
     // Client-side validation for mandatory fields
-    const requiredFields = ['full_name', 'date_of_birth', 'gender', 'residential_address', 'permanent_address', 'nationality', 'national_id_number'];
+    const requiredFields = ['full_name', 'date_of_birth', 'gender', 'residential_address', 'permanent_address', 'nationality', 'national_id_number', 'mobile_number'];
     for (const field of requiredFields) {
       if (!formData[field as keyof typeof formData]) {
         setError(`Please fill out all mandatory fields.`);
@@ -43,7 +43,6 @@ export default function Onboarding() {
 
     const payload = { ...formData };
     // Remove empty optional fields so they don't fail backend validation
-    if (!payload.mobile_number) delete (payload as any).mobile_number;
     if (!payload.contact_email) delete (payload as any).contact_email;
     if (!payload.pan_tax_id) delete (payload as any).pan_tax_id;
 
@@ -128,8 +127,8 @@ export default function Onboarding() {
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="mobile_number">Mobile Number (Optional)</Label>
-                  <Input id="mobile_number" name="mobile_number" type="tel" value={formData.mobile_number} onChange={handleChange} />
+                  <Label htmlFor="mobile_number">Mobile Number *</Label>
+                  <Input id="mobile_number" name="mobile_number" type="tel" value={formData.mobile_number} onChange={handleChange} required />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="contact_email">Secondary Email (Optional)</Label>

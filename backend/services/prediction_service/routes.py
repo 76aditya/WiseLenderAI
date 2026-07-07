@@ -13,7 +13,7 @@ router = APIRouter(prefix="", tags=["prediction"])
 def authorize_application(application: Application, current_user):
     if application is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Application not found")
-    if str(application.user_id) != str(current_user.id) and not current_user.admin:
+    if application.user_id != current_user.username and not current_user.admin:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
     return application
 
