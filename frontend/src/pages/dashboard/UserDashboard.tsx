@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FilePlus, FileText, Edit } from 'lucide-react';
+import { FilePlus, FileText, Edit, Trash2 } from 'lucide-react';
 import client, { APP_URL } from '@/api/client';
 
 export default function UserDashboard() {
@@ -29,6 +29,20 @@ export default function UserDashboard() {
     e.preventDefault();
     e.stopPropagation();
     navigate(`/applications/edit/${id}`);
+  };
+
+  const handleDelete = async (id: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (window.confirm("Are you sure you want to delete this loan application? This action cannot be undone.")) {
+      try {
+        await client.delete(`${APP_URL}/applications/${id}`);
+        setApplications(prev => prev.filter(app => app.id !== id));
+      } catch (err) {
+        console.error('Failed to delete application', err);
+        alert('Failed to delete application. Please try again.');
+      }
+    }
   };
 
   return (
@@ -80,13 +94,16 @@ export default function UserDashboard() {
                     </div>
                   </CardContent>
                 </Link>
-                  {app.status === 'DRAFT' && (
                   <CardFooter className="pt-0 flex justify-end gap-2">
-                    <Button variant="outline" size="sm" onClick={(e) => handleEdit(app.id, e)} className="h-8">
-                      <Edit className="h-3 w-3 mr-1" /> Edit
+                    {app.status === 'DRAFT' && (
+                      <Button variant="outline" size="sm" onClick={(e) => handleEdit(app.id, e)} className="h-8">
+                        <Edit className="h-3 w-3 mr-1" /> Edit
+                      </Button>
+                    )}
+                    <Button variant="destructive" size="sm" onClick={(e) => handleDelete(app.id, e)} className="h-8">
+                      <Trash2 className="h-3 w-3 mr-1" /> Delete
                     </Button>
                   </CardFooter>
-                )}
               </Card>
             </div>
           ))}

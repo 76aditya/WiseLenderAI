@@ -14,9 +14,21 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 def _user_to_dict(user: User) -> dict:
     return {
         "id": str(user.id),
+        "username": user.username,
         "email": user.email,
         "admin": user.admin,
         "is_active": user.is_active,
+        "full_name": user.full_name,
+        "date_of_birth": user.date_of_birth,
+        "gender": user.gender,
+        "residential_address": user.residential_address,
+        "permanent_address": user.permanent_address,
+        "nationality": user.nationality,
+        "user_status": user.user_status,
+        "mobile_number": user.mobile_number,
+        "contact_email": user.contact_email,
+        "national_id_number": user.national_id_number,
+        "pan_tax_id": user.pan_tax_id,
         "created_at": user.created_at,
         "updated_at": user.updated_at,
     }
@@ -59,7 +71,7 @@ def _application_to_dict(application: Application) -> dict:
     }
 
 
-@router.get("/users", response_model=list[admin_schemas.UserResponse])
+@router.get("/users", response_model=list[admin_schemas.UserSummaryResponse])
 def list_users(
     search: str | None = Query(default=None, description="Filter users by email"),
     db: Session = Depends(get_db),
@@ -69,7 +81,30 @@ def list_users(
     if search:
         query = query.filter(User.email.ilike(f"%{search}%"))
     users = query.order_by(User.created_at.desc()).all()
-    return [admin_schemas.UserResponse(**_user_to_dict(user)) for user in users]
+    
+    results = []
+    for user in users:
+        latest_app = db.query(Application).filter(Application.user_id == user.id).order_by(Application.created_at.desc()).first()
+        results.append(admin_schemas.UserSummaryResponse(
+            id=str(user.id),
+            email=user.email,
+            username=user.username,
+            role="Admin" if user.admin else "User",
+            user_status=user.user_status,
+            latest_application_id=str(latest_app.id) if latest_app else None
+        ))
+    return results
+
+@router.get("/users/{user_id}", response_model=admin_schemas.UserResponse)
+def get_user_details(
+    user_id: str,
+    db: Session = Depends(get_db),
+    current_user=Depends(require_admin),
+):
+    user = db.query(User).filter(User.id == user_id).one_or_none()
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return admin_schemas.UserResponse(**_user_to_dict(user))
 
 
 @router.get("/applications", response_model=list[admin_schemas.AdminApplicationDetailResponse])

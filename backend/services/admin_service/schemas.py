@@ -3,6 +3,19 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
+from typing import Optional
+from pydantic import BaseModel
+
+class UserSummaryResponse(BaseModel):
+    id: str
+    latest_application_id: Optional[str] = None
+    username: str
+    email: Optional[str] = None
+    role: str
+    user_status: str            
+
+    class Config:
+        from_attributes = True  
 
 class ReviewRequest(BaseModel):
     final_review: Literal["APPROVED", "REJECTED"] = Field(
@@ -16,9 +29,21 @@ class ReviewRequest(BaseModel):
 
 class UserResponse(BaseModel):
     id: str
-    email: str
+    username: str
+    email: str | None = None
     admin: bool
     is_active: bool
+    full_name: str
+    date_of_birth: str
+    gender: str
+    residential_address: str
+    permanent_address: str
+    nationality: str
+    user_status: str
+    mobile_number: str | None = None
+    contact_email: str | None = None
+    national_id_number: str | None = None
+    pan_tax_id: str | None = None
     created_at: datetime
     updated_at: datetime
 

@@ -10,9 +10,11 @@ import Profile from './pages/Profile';
 import UserDashboard from './pages/dashboard/UserDashboard';
 import NewApplication from './pages/dashboard/NewApplication';
 import ApplicationDetail from './pages/dashboard/ApplicationDetail';
+import Onboarding from './pages/dashboard/Onboarding';
 
 import AdminDashboard from './pages/admin/AdminDashboard';
 import UsersList from './pages/admin/UsersList';
+import AdminUserDetails from './pages/admin/AdminUserDetails';
 import ApplicationsList from './pages/admin/ApplicationsList';
 import AdminApplicationDetail from './pages/admin/AdminApplicationDetail';
 
@@ -28,6 +30,7 @@ function App() {
             
             {/* User Routes */}
             <Route element={<ProtectedLayout />}>
+              <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/dashboard" element={<UserDashboard />} />
               <Route path="/applications/new" element={<NewApplication />} />
               <Route path="/applications/edit/:id" element={<NewApplication />} />
@@ -39,6 +42,7 @@ function App() {
             <Route element={<ProtectedLayout adminOnly={true} />}>
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/admin/users" element={<UsersList />} />
+              <Route path="/admin/users/:id" element={<AdminUserDetails />} />
               <Route path="/admin/applications" element={<ApplicationsList />} />
               <Route path="/admin/applications/:id" element={<AdminApplicationDetail />} />
             </Route>

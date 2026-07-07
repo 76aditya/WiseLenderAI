@@ -3,9 +3,21 @@ import client, { AUTH_URL } from '../api/client';
 
 export interface User {
   id: string;
-  email: string;
+  username: string;
+  email?: string;
   admin: boolean;
   is_active: boolean;
+  full_name: string;
+  date_of_birth: string;
+  gender: string;
+  residential_address: string;
+  permanent_address: string;
+  nationality: string;
+  user_status: string;
+  mobile_number?: string;
+  contact_email?: string;
+  national_id_number?: string;
+  pan_tax_id?: string;
 }
 
 interface AuthContextType {
@@ -25,6 +37,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     async function loadUser() {
+      setIsLoading(true);
       if (!token) {
         setIsLoading(false);
         return;
@@ -43,6 +56,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [token]);
 
   const login = (newToken: string) => {
+    setIsLoading(true);
     localStorage.setItem('token', newToken);
     setToken(newToken);
   };

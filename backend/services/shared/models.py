@@ -39,10 +39,26 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    email = Column(String(255), unique=True, nullable=False, index=True)
+    username = Column(String(255), unique=True, nullable=False, index=True)
+    email = Column(String(255), unique=True, nullable=True, index=True)
     hashed_password = Column(String(255), nullable=False)
     admin = Column(Boolean, nullable=False, default=False)
     is_active = Column(Boolean, nullable=False, default=True)
+    
+    # Extended Profile Fields
+    full_name = Column(String(255), nullable=False, server_default='Pending')
+    date_of_birth = Column(String(50), nullable=False, server_default='Not Provided')
+    gender = Column(String(50), nullable=False, server_default='Not Provided')
+    residential_address = Column(Text, nullable=False, server_default='Not Provided')
+    permanent_address = Column(Text, nullable=False, server_default='Not Provided')
+    nationality = Column(String(100), nullable=False, server_default='Not Provided')
+    user_status = Column(String(50), nullable=False, server_default='Pending')
+    
+    # Optional Fields
+    mobile_number = Column(String(50), nullable=True)
+    contact_email = Column(String(255), nullable=True)
+    national_id_number = Column(String(100), nullable=True)
+    pan_tax_id = Column(String(100), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 

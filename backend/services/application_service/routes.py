@@ -92,3 +92,10 @@ def reject_application(application_id: str, db: Session = Depends(get_db), curre
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Application not found")
     application = crud.update_application(db, application, status="REJECTED")
     return to_application_response(application)
+
+@router.delete("/{application_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_application(application_id: str, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+    application = crud.get_application_by_id(db, application_id)
+    authorize_application(application, current_user)
+    crud.delete_application(db, application)
+    return None

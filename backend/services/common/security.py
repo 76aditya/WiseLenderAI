@@ -13,7 +13,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class TokenPayload(BaseModel):
     sub: str
-    email: str
+    username: str
     admin: bool = False
     exp: int
 
@@ -29,17 +29,17 @@ def verify_password(password: str, hashed_password: str) -> bool:
     logger.info("auth.security.verify_password")
     return pwd_context.verify(password, hashed_password)
 
-def create_access_token(subject: str, email: str, admin: bool = False, expires_delta: timedelta | None = None) -> str:
+def create_access_token(subject: str, username: str, admin: bool = False, expires_delta: timedelta | None = None) -> str:
     expire = datetime.utcnow() + (expires_delta or timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES))
     payload = {
         "sub": subject,
-        "email": email,
+        "username": username,
         "admin": admin,
         "exp": int(expire.timestamp()),
     }
     logger.info(
         "auth.security.create_access_token",
-        extra={"email": email, "admin": admin, "expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES},
+        extra={"username": username, "admin": admin, "expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES},
     )
     return jwt.encode(payload, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
 

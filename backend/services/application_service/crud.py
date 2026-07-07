@@ -76,3 +76,8 @@ def review_application(db: Session, application: Application, final_review: str,
     db.commit()
     db.refresh(application)
     return application
+
+
+def delete_application(db: Session, application: Application) -> None:
+    db.delete(application)
+    db.commit()

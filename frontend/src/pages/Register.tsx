@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import client, { AUTH_URL } from '@/api/client';
 
 export default function Register() {
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -35,19 +36,19 @@ export default function Register() {
 
     try {
       // 1. Register user
-      await client.post(`${AUTH_URL}/auth/register/`, {
-        email,
-        password
-      });
+      const payload: any = { username, password };
+      if (email) payload.email = email;
+      
+      await client.post(`${AUTH_URL}/auth/register/`, payload);
       
       // 2. Automatically login after registration
       const loginResponse = await client.post(`${AUTH_URL}/auth/login/`, {
-        email,
+        username,
         password
       });
       
       login(loginResponse.data.access_token);
-      navigate('/dashboard');
+      navigate('/onboarding');
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Registration failed. Please try again.');
     } finally {
@@ -66,7 +67,7 @@ export default function Register() {
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl">Create an account</CardTitle>
           <CardDescription>
-            Enter your email below to create your account
+            Enter your details below to create your account
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
@@ -77,12 +78,22 @@ export default function Register() {
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="username">Username</Label>
+              <Input 
+                id="username" 
+                type="text" 
+                placeholder="Choose a username" 
+                required 
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email Address (Optional)</Label>
               <Input 
                 id="email" 
                 type="email" 
                 placeholder="m@example.com" 
-                required 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />

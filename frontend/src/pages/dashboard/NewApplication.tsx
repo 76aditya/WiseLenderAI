@@ -33,6 +33,7 @@ export default function NewApplication() {
     home_ownership: 'RENT',
     purpose: 'debt_consolidation',
     verification_status: 'Verified',
+    adhaar_card_id: '',
     
     FLAG_MOBIL: 1,
     FLAG_PHONE: 1,
@@ -261,6 +262,10 @@ export default function NewApplication() {
                   <CardTitle>Personal & Demographic Profile</CardTitle>
                 </CardHeader>
                 <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Aadhaar Card ID</Label>
+                    <Input type="text" name="adhaar_card_id" value={formData.adhaar_card_id || ''} onChange={handleChange} required placeholder="XXXX-XXXX-XXXX" />
+                  </div>
                   <div className="space-y-2">
                     <Label>Employment Duration (Days)</Label>
                     <Input type="number" name="DAYS_EMPLOYED" value={formData.DAYS_EMPLOYED} onChange={handleChange} required />
