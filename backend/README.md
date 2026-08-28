@@ -5,7 +5,7 @@ This backend contains modular services for authentication, application managemen
 ## Setup
 
 ```bash
-cd /home/aditya76/Downloads/CODE/WiseLenderAI-main/backend
+cd WiseLenderAI-main/backend
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -46,7 +46,7 @@ The migration system loads `DATABASE_URL` from `.env` via `services/shared/confi
 
 ### Initialize Alembic
 ```bash
-cd /home/aditya76/Downloads/CODE/WiseLenderAI-main/backend
+cd WiseLenderAI-main/backend
 . .venv/bin/activate
 # Already initialized by this project; no need to run alembic init
 ls migrations
@@ -54,28 +54,28 @@ ls migrations
 
 ### Create a new migration
 ```bash
-cd /home/aditya76/Downloads/CODE/WiseLenderAI-main/backend
+cd WiseLenderAI-main/backend
 . .venv/bin/activate
 python3 -m alembic -c alembic.ini revision --autogenerate -m "your message"
 ```
 
 ### Apply migrations
 ```bash
-cd /home/aditya76/Downloads/CODE/WiseLenderAI-main/backend
+cd WiseLenderAI-main/backend
 . .venv/bin/activate
 python3 -m alembic -c alembic.ini upgrade head
 ```
 
 ### Rollback migration
 ```bash
-cd /home/aditya76/Downloads/CODE/WiseLenderAI-main/backend
+cd WiseLenderAI-main/backend
 . .venv/bin/activate
 python3 -m alembic -c alembic.ini downgrade -1
 ```
 
 ### Upgrade to latest version
 ```bash
-cd /home/aditya76/Downloads/CODE/WiseLenderAI-main/backend
+cd WiseLenderAI-main/backend
 . .venv/bin/activate
 python3 -m alembic -c alembic.ini upgrade head
 ```
@@ -84,7 +84,7 @@ python3 -m alembic -c alembic.ini upgrade head
 Use the provided startup wrapper so migrations run before the service launches:
 
 ```bash
-cd /home/aditya76/Downloads/CODE/WiseLenderAI-main/backend
+cd WiseLenderAI-main/backend
 ./startup.sh uvicorn services.application_service.main:app --host 0.0.0.0 --port 8002
 ```
 
