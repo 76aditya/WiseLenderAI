@@ -29,7 +29,7 @@ The ML model API runs separately on:
 ## 1. Run the backend
 
 ```bash
-cd /home/aditya76/Downloads/CODE/WiseLenderAI-main/backend
+cd WiseLenderAI-main/backend
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -66,7 +66,7 @@ PYTHONPATH=. celery -A services.prediction_service.tasks worker --loglevel=info
 ## 2. Run the ML model API
 
 ```bash
-cd /home/aditya76/Downloads/CODE/WiseLenderAI-main/ml-model
+cd WiseLenderAI-main/ml-model
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -76,7 +76,7 @@ uvicorn api.main:app --host 0.0.0.0 --port 8000
 ## 3. Run the frontend
 
 ```bash
-cd /home/aditya76/Downloads/CODE/WiseLenderAI-main/frontend
+cd WiseLenderAI-main/frontend
 npm install
 npm run dev
 ```
